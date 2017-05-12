@@ -117,7 +117,7 @@ class NeuralNetwork:
                 self.weights[j] += learning_rate * layer.T.dot(delta)
 
             if k % 10000 == 0:
-                print('epochs: ' + str(k), ', error: ' + str(error[0]*error[0]*0.5))
+                print('epochs: ' + str(k), '; error: ' + str((error*error*0.5).sum()/error.shape[0]))
 
     def predict(self, x):
         a = np.concatenate((np.ones(1).T, np.array(x)), axis=0)

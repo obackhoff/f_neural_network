@@ -16,6 +16,7 @@ binary_dim = 8
 largest_number = pow(2,binary_dim)
 sum_largest_number = pow(2, (binary_dim - 1))
 mult_largest_number = pow(2, int(binary_dim/2))
+
 binary = np.unpackbits(
     np.array([range(largest_number)],dtype=np.uint8).T,axis=1)
 for i in range(largest_number):
@@ -29,8 +30,9 @@ y = []
 #     a = i
 #     for j in range(sum_largest_number):
 #         b = j
-#         X.append(np.concatenate([int2binary[a],int2binary[b]]))
-#         y.append(int2binary[a+b])
+#         if np.random.rand() < 0.2:
+#             X.append(np.concatenate([int2binary[a],int2binary[b]]))
+#             y.append(int2binary[a+b])
 
 # X_p = []
 # for i in range(4):
@@ -45,11 +47,12 @@ for i in range(mult_largest_number):
     a = i
     for j in range(mult_largest_number):
         b = j
-        X.append(np.concatenate([int2binary[a],int2binary[b]]))
-        y.append(int2binary[a*b])
+        if np.random.rand() < 0.75:
+            X.append(np.concatenate([int2binary[a],int2binary[b]]))
+            y.append(int2binary[a*b])
 
 X_p = []
-for i in range(4):
+for i in range(8):
 	a = np.random.randint(mult_largest_number)
 	b = np.random.randint(mult_largest_number)
 	X_p.append(np.concatenate([int2binary[a],int2binary[b]]))
@@ -61,7 +64,7 @@ y = np.array(y)
 # nn = NeuralNetwork([16,32,8], activation='tanh', output_activation='tanh')
 nn = NeuralNetwork([16,32,8], activation='relu', output_activation='sigmoid')
 
-nn.fit(X, y, learning_rate=0.05, epochs=X.shape[0] * 800, all_input=False)
+nn.fit(X, y, learning_rate=0.05, epochs=X.shape[0] * 5000, all_input=False)
 
 # nn.save_model('model_mult.nn')
 
@@ -88,7 +91,7 @@ for e in X_p:
 # print('ADDITION NN')
 #
 # X_p = []
-# for i in range(4):
+# for i in range(8):
 # 	a = np.random.randint(sum_largest_number)
 # 	b = np.random.randint(sum_largest_number)
 # 	X_p.append(np.concatenate([int2binary[a],int2binary[b]]))

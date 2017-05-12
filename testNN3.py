@@ -2,7 +2,7 @@ from neural_network import *
 import math
 import time
 
-nn = NeuralNetwork([1,8,16,1], activation='relu', output_activation='relu')
+nn = NeuralNetwork([1,8,16,1], activation='relu', output_activation='lin')
 # nn = NeuralNetwork([1,4,4,1], activation='sigmoid', output_activation='lin')
 
 X_1 = []
