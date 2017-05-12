@@ -19,7 +19,7 @@ for i in range(300):
 X_1 = np.array(X_1)
 y_1 = np.array(y_1)
 
-nn.fit(X_1, y_1, learning_rate=0.0001, epochs=X_1.shape[0] * 2000, all_input=False)
+nn.fit(X_1, y_1, learning_rate=0.0001, epochs=X_1.shape[0] * 2000, all_input=False, lmbda=5)
 
 X_p = np.array([[0.5, 0.1],
               [5, 5],

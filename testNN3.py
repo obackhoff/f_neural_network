@@ -17,7 +17,7 @@ for i in range(10000):
 X_1 = np.array(X_1)
 y_1 = np.array(y_1)
 
-nn.fit(X_1, y_1, learning_rate=0.00001, epochs=X_1.shape[0] * 100, all_input=False)
+nn.fit(X_1, y_1, learning_rate=0.00005, epochs=X_1.shape[0] * 100, all_input=False)
 
 X_p = np.array([[0.5],
               [-2],

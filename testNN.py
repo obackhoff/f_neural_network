@@ -64,7 +64,7 @@ y = np.array(y)
 # nn = NeuralNetwork([16,32,8], activation='tanh', output_activation='tanh')
 nn = NeuralNetwork([16,32,8], activation='elu', output_activation='sigmoid')
 
-nn.fit(X, y, learning_rate=0.05, epochs=X.shape[0] * 800, all_input=True)
+nn.fit(X, y, learning_rate=0.1, epochs=X.shape[0] * 800, all_input=False, lmbda=0)
 
 # nn.save_model('model_mult.nn')
 
