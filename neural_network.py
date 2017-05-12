@@ -15,11 +15,11 @@ def softplus_prime(x):
     return (np.exp(x) - 1) / np.exp(x)
 
 def elu(x):
-    a = 0.5
+    a = 1
     return np.where(x < 0, a*(np.exp(x) - 1), x)
 
 def elu_prime(fx):
-    a = 0.5
+    a = 1
     return np.where(fx < 0, (fx + a), 1)
 
 def tanh(x):
