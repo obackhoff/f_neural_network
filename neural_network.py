@@ -1,6 +1,7 @@
 import numpy as np
 import pickle
 
+
 def sigmoid(x):
     return 1.0/(1.0 + np.exp(-x))
 
@@ -14,12 +15,12 @@ def softplus_prime(x):
     return (np.exp(x) - 1) / np.exp(x)
 
 def elu(x):
-    a = 0.1
-    return np.array(list(map(lambda v: a*(np.exp(v) - 1) if v < 0 else v, x)))
+    a = 0.5
+    return np.where(x < 0, a*(np.exp(x) - 1), x)
 
 def elu_prime(fx):
-    a = 0.1
-    return np.array(list(map(lambda v: (v + a) if v < 0 else 1, fx)))
+    a = 0.5
+    return np.where(fx < 0, (fx + a), 1)
 
 def tanh(x):
     return np.tanh(1*x)
