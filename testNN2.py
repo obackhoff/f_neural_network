@@ -4,7 +4,7 @@ import time
 
 
 # nn = NeuralNetwork([2,8,16,1], activation='tanh', output_activation='lin')
-nn = NeuralNetwork([2,16,16,1], activation='relu', output_activation='lin')
+nn = NeuralNetwork([2,16,16,1], activation='elu', output_activation='lin')
 
 X_1 = []
 y_1 = []

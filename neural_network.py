@@ -7,11 +7,19 @@ def sigmoid(x):
 def sigmoid_prime(fx):
     return fx*(1.0 - fx)
 
-def relu(x):
+def softplus(x):
     return np.log(1 + np.exp(x))
 
-def relu_prime(x):
+def softplus_prime(x):
     return (np.exp(x) - 1) / np.exp(x)
+
+def elu(x):
+    a = 0.1
+    return np.array(list(map(lambda v: a*(np.exp(v) - 1) if v < 0 else v, x)))
+
+def elu_prime(fx):
+    a = 0.1
+    return np.array(list(map(lambda v: (v + a) if v < 0 else 1, fx)))
 
 def tanh(x):
     return np.tanh(1*x)
@@ -35,9 +43,12 @@ class NeuralNetwork:
         elif activation == 'tanh':
             self.activation = tanh
             self.activation_prime = tanh_prime
-        elif activation == 'relu':
-            self.activation = relu
-            self.activation_prime = relu_prime
+        elif activation == 'softplus':
+            self.activation = softplus
+            self.activation_prime = softplus_prime
+        elif activation == 'elu':
+            self.activation = elu
+            self.activation_prime = elu_prime
 
         if output_activation == 'sigmoid':
             self.output_activation = sigmoid
@@ -45,12 +56,15 @@ class NeuralNetwork:
         elif output_activation == 'tanh':
             self.output_activation = tanh
             self.output_activation_prime = tanh_prime
-        elif output_activation == 'relu':
-            self.output_activation = relu
-            self.output_activation_prime = relu_prime
+        elif output_activation == 'softplus':
+            self.output_activation = softplus
+            self.output_activation_prime = softplus_prime
+        elif output_activation == 'elu':
+            self.output_activation = elu
+            self.output_activation_prime = elu_prime
         elif output_activation == 'lin':
-            self.output_activation = relu
-            self.output_activation_prime = relu_prime
+            self.output_activation = lin
+            self.output_activation_prime = lin_prime
 
         # Set weights
         self.weights = []

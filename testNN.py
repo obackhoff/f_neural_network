@@ -47,7 +47,7 @@ for i in range(mult_largest_number):
     a = i
     for j in range(mult_largest_number):
         b = j
-        if np.random.rand() < 0.75:
+        if np.random.rand() < 1:
             X.append(np.concatenate([int2binary[a],int2binary[b]]))
             y.append(int2binary[a*b])
 
@@ -62,9 +62,9 @@ X = np.array(X)
 y = np.array(y)
 
 # nn = NeuralNetwork([16,32,8], activation='tanh', output_activation='tanh')
-nn = NeuralNetwork([16,32,8], activation='relu', output_activation='sigmoid')
+nn = NeuralNetwork([16,32,8], activation='elu', output_activation='sigmoid')
 
-nn.fit(X, y, learning_rate=0.05, epochs=X.shape[0] * 5000, all_input=False)
+nn.fit(X, y, learning_rate=0.05, epochs=X.shape[0] * 800, all_input=True)
 
 # nn.save_model('model_mult.nn')
 
