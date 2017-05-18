@@ -7,6 +7,10 @@ Example usage:
 
 ```
 
+Where the FNN has 2 inputs, 4 neuros in one hidden layer and 1 output. -t means to train the following dataset (file or given string-array), -p means to predict the following values (file or values), -e the number of epochs and -s to save the model with the filename 'model.nn'.
+
+Note: -n [2,4,4,1] would mean to use 2 hiden layers with 4 neurons each.
+
 ```
 Usage: fnn.py [options] dataset
 
