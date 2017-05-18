@@ -1,7 +1,14 @@
+#!/bin/env python
+from optparse import OptionParser
+import json
 import numpy as np
 import pickle
+import os.path
 
+ACTIVATIONS = ["sigmoid", "softplus", "elu", "tanh"]
+OUT_ACTIVATIONS = ["lin","sigmoid", "softplus", "elu", "tanh"]
 
+# DEFINIG ACTIVATION FUNCTIONS
 def sigmoid(x):
     return 1.0/(1.0 + np.exp(-x))
 
@@ -35,6 +42,7 @@ def lin_prime(fx):
     return 1.0
 
 
+# FeedForward Neural Network
 class FNN:
 
     def __init__(self, layers, activation='sigmoid', output_activation='sigmoid'):
@@ -152,6 +160,136 @@ class FNN:
         with open(filename, 'rb') as input:
             return pickle.load(input)
 
-if __name__ == '__main__':
 
-    pass
+# Helper functions
+def show_activations():
+    print("Activations: \n")
+    for a in ACTIVATIONS:
+        print(a)
+    print("\nOutput activations: \n")
+    for a in OUT_ACTIVATIONS:
+        print(a)
+
+def main():
+    parser = OptionParser(usage="usage: %prog [options] dataset",
+                          version="%prog 1.0")
+    parser.add_option("-t", "--train",
+                      dest="nn_dataset",
+                      default=None,
+                      help="Train NN with provided dataset")
+    parser.add_option("-n", "--nnshape",
+                      dest="nn_shape",
+                      default=[2,1],
+                      help="Set the neural network shape (inputs, hidden_layer1, ..., outputs)")
+    parser.add_option("-p", "--predict",
+                      dest="nn_predict",
+                      default=None,
+                      help="Predict using the model and given data")
+    parser.add_option("-e", "--epochs",
+                      dest="nn_epochs",
+                      default=10000,
+                      help="Set the number of epochs to train the NN")
+    parser.add_option("-a", "--activation",
+                      dest="nn_activation",
+                      default="tanh",
+                      help="Set the activation function for the hidden layers")
+    parser.add_option("-o", "--outactivation",
+                      dest="nn_output_activation",
+                      default="sigmoid",
+                      help="Set the activation function for the output layer")
+    parser.add_option("-l", "--learningrate",
+                      dest="nn_learning_rate",
+                      default=0.1,
+                      help="Set the learning rate for the NN")
+    parser.add_option("-L", "--lambda",
+                      dest="nn_lambda",
+                      default=0.0,
+                      help="Set the regularization factor")
+    parser.add_option("-A", "--activfunctions",
+                      action="store_true",
+                      dest="show_activ",
+                      default=False,
+                      help="Show the activation functions")
+    parser.add_option("-s", "--savemodel",
+                      dest="model_save_filename",
+                      default="",
+                      help="Set filename to save the model after training")
+    parser.add_option("-m", "--model",
+                      dest="model_load_filename",
+                      default="",
+                      help="Load model to predict data or continue training it")
+    parser.add_option("-d", "--delimiter",
+                      dest="csv_delimiter",
+                      default=",",
+                      help="Set the delimiter of the CSV file")
+    parser.add_option("-H", "--hasheader",
+                      action="store_true",
+                      dest="csv_hasheader",
+                      default=False,
+                      help="If set, the header (first line) of the dataset will be omitted")
+    parser.add_option("-I", "--allinput",
+                      action="store_true",
+                      dest="nn_allinput",
+                      default=False,
+                      help="If set, the dataset will be read line by line instead of random samples")
+
+
+    (options, args) = parser.parse_args()
+
+    if len(args) > 1:
+        parser.error("wrong number of arguments")
+
+    if options.show_activ:
+        show_activations()
+
+    nn = None
+    if not options.model_load_filename == "":
+        nn = FNN.load_model(options.model_load_filename)
+
+    if not options.nn_dataset == None:
+        dataset = np.array([])
+        isFile = os.path.isfile(options.nn_dataset) 
+        if isFile:
+            dataset = np.genfromtxt(options.nn_dataset, delimiter=options.csv_delimiter)
+            if options.csv_hasheader:
+                dataset = dataset[1:]
+        else:
+            print("Dataset not a file; trying to parse string, e.g. '[[a1,b1,...],[a2,b2,...]]'")
+            dataset = np.array(json.loads(options.nn_dataset))
+            if options.csv_hasheader:
+                dataset = dataset[1:]
+
+        nnShape = list(json.loads(options.nn_shape))
+        outputIndex = int(nnShape[-1])
+        if nn == None:
+            nn = FNN(nnShape, 
+                activation=options.nn_activation, 
+                output_activation=options.nn_output_activation)
+
+        outputs = dataset[ : , -outputIndex : ] 
+        inputs = dataset[ : , 0 : -outputIndex]
+
+        nn.fit(inputs, outputs, 
+            learning_rate=float(options.nn_learning_rate), 
+            epochs=int(options.nn_epochs),
+            lmbda=float(options.nn_lambda),
+            all_input=options.nn_allinput)
+
+        if not options.model_save_filename == "":
+            nn.save_model(options.model_save_filename)
+
+    if not options.nn_predict == None:
+        isFile = os.path.isfile(options.nn_predict)         
+        if isFile:
+            options.nn_predict = np.genfromtxt(options.nn_predict, delimiter=options.csv_delimiter)
+        else:
+            print("Input is not a file; trying to parse string, e.g. '[[a1,b1,...],[a2,b2,...]]'")
+            options.nn_predict = np.array(json.loads(options.nn_predict))
+        for x in options.nn_predict:
+            p = nn.predict(x);
+            print(p)
+
+
+# Command line option parser and executor
+if __name__ == '__main__':
+    main()
