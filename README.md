@@ -6,7 +6,7 @@ Example usage (XOR function):
 ./fnn.py -n '[2,4,1]' -a tanh -o sigmoid -t '[[0,0,0],[0,1,1],[1,0,1],[1,1,0]]' -p '[[0,0],[0,1],[1,0],[1,1]]' -e 50000 -s model.nn
 ```
 
-Where the FNN has 2 inputs, 4 neurons in one hidden layer and 1 output. -t means to train the following dataset (file or given string-array), -p means to predict the following values (file or values), -e the number of epochs, -s to save the model with the filename 'model.nn', -a to set the activation funtion of hidden layers as tanh and -o to set the activation funtion of the output layer as sigmoid.
+Where the FNN has 2 inputs, 4 neurons in one hidden layer and 1 output. -t means to train the following dataset (file or given string-array), -p means to predict the following values (file or values), -e the number of epochs, -s to save the model with the filename 'model.nn', -a to set the activation function of hidden layers as tanh and -o to set the activation function of the output layer as sigmoid.
 
 
 Note: -n [2,4,4,1] would mean to use 2 hidden layers with 4 neurons each.
