@@ -1,4 +1,4 @@
-This is a simple Feedforward neural network implemented in python with a command line tool, which could help knowing hot to use the NN class:
+This is a simple Feedforward neural network implemented in python with a command line tool, which might help geting to know how to use the NN class:
 
 ```
 Usage: fnn.py [options] dataset
