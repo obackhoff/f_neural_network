@@ -236,8 +236,8 @@ def main():
 
     (options, args) = parser.parse_args()
 
-    if len(args) > 1:
-        parser.error("wrong number of arguments")
+    if len(args) < 1:
+        parser.error("use -h to get help")
 
     if options.show_activ:
         show_activations()
