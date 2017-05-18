@@ -241,7 +241,7 @@ def main():
 
     (options, args) = parser.parse_args()
 
-    if not options.nn_dataset == None and not options.nn_predict == None and not options.show_activ == True:
+    if  options.nn_dataset == None and options.nn_predict == None and options.show_activ == False:
         parser.error("use -h to get help")
 
     if options.show_activ:
