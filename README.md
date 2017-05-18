@@ -1,5 +1,12 @@
 This is a simple Feedforward neural network implemented in python with a command line tool, which might help geting to know how to use the NN class:
 
+Example usage: 
+
+``` sh
+./fnn.py -n '[2,4,1]' -t '[[0,0,0],[0,1,1],[1,0,1],[1,1,0]]' -p '[[0,0],[0,1],[1,0],[1,1]]' -e 50000 -s model.nn
+
+```
+
 ```
 Usage: fnn.py [options] dataset
 
