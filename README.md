@@ -1,6 +1,6 @@
 This is a simple Feedforward neural network implemented in python with a command line tool, which could help knowing hot to use the NN class:
 
-'''
+```
 Usage: fnn.py [options] dataset
 
 Options:
@@ -35,4 +35,4 @@ Options:
   -I, --allinput        If set, the dataset will be read line by line instead
                         of random samples
 
-'''
+```
