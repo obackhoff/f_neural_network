@@ -187,7 +187,7 @@ def main():
                       help="Predict using the model and given data")
     parser.add_option("-e", "--epochs",
                       dest="nn_epochs",
-                      default=10000,
+                      default=30000,
                       help="Set the number of epochs to train the NN\n DEFAULT: 10000")
     parser.add_option("-a", "--activation",
                       dest="nn_activation",
@@ -241,7 +241,7 @@ def main():
 
     (options, args) = parser.parse_args()
 
-    if len(args) == 0:
+    if not options.nn_dataset == None and not options.nn_predict == None and not options.show_activ == True:
         parser.error("use -h to get help")
 
     if options.show_activ:
