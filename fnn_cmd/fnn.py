@@ -241,7 +241,7 @@ def main():
 
     (options, args) = parser.parse_args()
 
-    if len(args) > 1:
+    if len(args) == 0:
         parser.error("use -h to get help")
 
     if options.show_activ:
