@@ -10,6 +10,7 @@ Where the FNN has 2 inputs, 4 neurons in one hidden layer and 1 output. -t means
 
 
 Note: -n [2,4,4,1] would mean to use 2 hidden layers with 4 neurons each.
+Note 2: for some activation functions, there could be overflows... this is solved by adjusting the learning rate and/or regularization factor. Usually reducing it, e.g. 0.1 --> 0.01
 
 Outputs:
 ```
