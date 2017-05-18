@@ -88,7 +88,7 @@ class FNN:
         r = 2 * np.random.random( (layers[i] + 1, layers[i+1])) - 1.0
         self.weights.append(r)
 
-    def fit(self, X, y, learning_rate=0.2, epochs=50000, lmbda=0, all_input=False):
+    def fit(self, X, y, learning_rate=0.2, epochs=50000, report_every=10000, lmbda=0, all_input=False):
         # Add column of ones to X
         # This is to add the bias unit to the input layer
         ones = np.atleast_2d(np.ones(X.shape[0]))
@@ -140,7 +140,7 @@ class FNN:
                 # self.weights[j] += learning_rate * layer.T.dot(delta)
                 self.weights[j] = (1 - lmbda*learning_rate/X.shape[0])*(self.weights[j]) + learning_rate * layer.T.dot(delta)
 
-            if k % 10000 == 0:
+            if k % report_every == 0:
                 print('epochs: ' + str(k), '; error: ' + str((error*error*0.5).sum()/error.shape[0]))
 
     def predict(self, x):
@@ -232,11 +232,16 @@ def main():
                       dest="nn_allinput",
                       default=False,
                       help="If set, the dataset will be read line by line instead of random samples")
+    parser.add_option("-r", "--reportevery",
+                      dest="nn_report_every",
+                      default=10000,
+                      help="The number of epochs to report data from the trainig process")
+
 
 
     (options, args) = parser.parse_args()
 
-    if len(args) < 1:
+    if len(args) > 1:
         parser.error("use -h to get help")
 
     if options.show_activ:
@@ -272,6 +277,7 @@ def main():
         nn.fit(inputs, outputs, 
             learning_rate=float(options.nn_learning_rate), 
             epochs=int(options.nn_epochs),
+            report_every=int(options.nn_report_every),
             lmbda=float(options.nn_lambda),
             all_input=options.nn_allinput)
 
@@ -283,7 +289,7 @@ def main():
         if isFile:
             options.nn_predict = np.genfromtxt(options.nn_predict, delimiter=options.csv_delimiter)
         else:
-            print("Input is not a file; trying to parse string, e.g. '[[a1,b1,...],[a2,b2,...]]'")
+            print("Data to predict is not a file; trying to parse string, e.g. '[[a1,b1,...],[a2,b2,...]]'")
             options.nn_predict = np.array(json.loads(options.nn_predict))
         for x in options.nn_predict:
             p = nn.predict(x);

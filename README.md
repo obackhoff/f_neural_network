@@ -11,6 +11,22 @@ Where the FNN has 2 inputs, 4 neurons in one hidden layer and 1 output. -t means
 
 Note: -n [2,4,4,1] would mean to use 2 hidden layers with 4 neurons each.
 
+Outputs:
+```
+Dataset not a file; trying to parse string, e.g. '[[a1,b1,...],[a2,b2,...]]'
+epochs: 0 ; error: 0.121040866385
+epochs: 10000 ; error: 0.000441144231835
+epochs: 20000 ; error: 0.00030402046664
+epochs: 30000 ; error: 0.000153988194167
+epochs: 40000 ; error: 0.000126763606198
+Data to predict is not a file; trying to parse string, e.g. '[[a1,b1,...],[a2,b2,...]]'
+[ 0.01289285]
+[ 0.98902458]
+[ 0.98899431]
+[ 0.01414206]
+```
+
+
 ```
 Usage: fnn.py [options] dataset
 
@@ -45,5 +61,9 @@ Options:
                         omitted
   -I, --allinput        If set, the dataset will be read line by line instead
                         of random samples
+  -r NN_REPORT_EVERY, --reportevery=NN_REPORT_EVERY
+                        The number of epochs to report data from the trainig
+                        process
+
 
 ```

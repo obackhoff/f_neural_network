@@ -80,7 +80,7 @@ class NeuralNetwork:
         r = 2 * np.random.random( (layers[i] + 1, layers[i+1])) - 1.0
         self.weights.append(r)
 
-    def fit(self, X, y, learning_rate=0.2, epochs=50000, lmbda=0, all_input=False):
+    def fit(self, X, y, learning_rate=0.2, epochs=50000,report_every=10000, lmbda=0, all_input=False):
         # Add column of ones to X
         # This is to add the bias unit to the input layer
         ones = np.atleast_2d(np.ones(X.shape[0]))
@@ -132,7 +132,7 @@ class NeuralNetwork:
                 # self.weights[j] += learning_rate * layer.T.dot(delta)
                 self.weights[j] = (1 - lmbda*learning_rate/X.shape[0])*(self.weights[j]) + learning_rate * layer.T.dot(delta)
 
-            if k % 10000 == 0:
+            if k % report_every == 0:
                 print('epochs: ' + str(k), '; error: ' + str((error*error*0.5).sum()/error.shape[0]))
 
     def predict(self, x):
