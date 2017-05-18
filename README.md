@@ -1,15 +1,15 @@
-This is a simple Feedforward neural network implemented in python with a command line tool, which might help geting to know how to use the NN class:
+This is a simple Feedforward neural network implemented in python with a command line tool, which might help getting to know how to use the NN class:
 
-Example usage: 
+Example usage (XOR function):
 
 ``` sh
 ./fnn.py -n '[2,4,1]' -t '[[0,0,0],[0,1,1],[1,0,1],[1,1,0]]' -p '[[0,0],[0,1],[1,0],[1,1]]' -e 50000 -s model.nn
 
 ```
 
-Where the FNN has 2 inputs, 4 neuros in one hidden layer and 1 output. -t means to train the following dataset (file or given string-array), -p means to predict the following values (file or values), -e the number of epochs and -s to save the model with the filename 'model.nn'.
+Where the FNN has 2 inputs, 4 neurons in one hidden layer and 1 output. -t means to train the following dataset (file or given string-array), -p means to predict the following values (file or values), -e the number of epochs and -s to save the model with the filename 'model.nn'.
 
-Note: -n [2,4,4,1] would mean to use 2 hiden layers with 4 neurons each.
+Note: -n [2,4,4,1] would mean to use 2 hidden layers with 4 neurons each.
 
 ```
 Usage: fnn.py [options] dataset
