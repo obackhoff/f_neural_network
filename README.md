@@ -37,33 +37,35 @@ Options:
                         Train NN with provided dataset
   -n NN_SHAPE, --nnshape=NN_SHAPE
                         Set the neural network shape (inputs, hidden_layer1,
-                        ..., outputs)
+                        ..., outputs)  DEFAULT: '[2,1]'
   -p NN_PREDICT, --predict=NN_PREDICT
                         Predict using the model and given data
   -e NN_EPOCHS, --epochs=NN_EPOCHS
-                        Set the number of epochs to train the NN
+                        Set the number of epochs to train the NN  DEFAULT:
+                        10000
   -a NN_ACTIVATION, --activation=NN_ACTIVATION
                         Set the activation function for the hidden layers
+                        DEFAULT: tanh
   -o NN_OUTPUT_ACTIVATION, --outactivation=NN_OUTPUT_ACTIVATION
                         Set the activation function for the output layer
+                        DEFAULT: sigmoid
   -l NN_LEARNING_RATE, --learningrate=NN_LEARNING_RATE
-                        Set the learning rate for the NN
+                        Set the learning rate for the NN   DEFAULT: 0.1
   -L NN_LAMBDA, --lambda=NN_LAMBDA
-                        Set the regularization factor
+                        Set the regularization factor   DEFAULT: 0.0
   -A, --activfunctions  Show the activation functions
   -s MODEL_SAVE_FILENAME, --savemodel=MODEL_SAVE_FILENAME
                         Set filename to save the model after training
   -m MODEL_LOAD_FILENAME, --model=MODEL_LOAD_FILENAME
                         Load model to predict data or continue training it
   -d CSV_DELIMITER, --delimiter=CSV_DELIMITER
-                        Set the delimiter of the CSV file
+                        Set the delimiter of the CSV file   DEFAULT: ','
   -H, --hasheader       If set, the header (first line) of the dataset will be
                         omitted
   -I, --allinput        If set, the dataset will be read line by line instead
                         of random samples
   -r NN_REPORT_EVERY, --reportevery=NN_REPORT_EVERY
                         The number of epochs to report data from the trainig
-                        process
-
+                        process   DEFAULT: 10000
 
 ```

@@ -180,7 +180,7 @@ def main():
     parser.add_option("-n", "--nnshape",
                       dest="nn_shape",
                       default=[2,1],
-                      help="Set the neural network shape (inputs, hidden_layer1, ..., outputs)")
+                      help="Set the neural network shape (inputs, hidden_layer1, ..., outputs)\n DEFAULT: '[2,1]'")
     parser.add_option("-p", "--predict",
                       dest="nn_predict",
                       default=None,
@@ -188,23 +188,23 @@ def main():
     parser.add_option("-e", "--epochs",
                       dest="nn_epochs",
                       default=10000,
-                      help="Set the number of epochs to train the NN")
+                      help="Set the number of epochs to train the NN\n DEFAULT: 10000")
     parser.add_option("-a", "--activation",
                       dest="nn_activation",
                       default="tanh",
-                      help="Set the activation function for the hidden layers")
+                      help="Set the activation function for the hidden layers \n DEFAULT: tanh")
     parser.add_option("-o", "--outactivation",
                       dest="nn_output_activation",
                       default="sigmoid",
-                      help="Set the activation function for the output layer")
+                      help="Set the activation function for the output layer\n DEFAULT: sigmoid")
     parser.add_option("-l", "--learningrate",
                       dest="nn_learning_rate",
                       default=0.1,
-                      help="Set the learning rate for the NN")
+                      help="Set the learning rate for the NN \n DEFAULT: 0.1")
     parser.add_option("-L", "--lambda",
                       dest="nn_lambda",
                       default=0.0,
-                      help="Set the regularization factor")
+                      help="Set the regularization factor \n DEFAULT: 0.0")
     parser.add_option("-A", "--activfunctions",
                       action="store_true",
                       dest="show_activ",
@@ -221,7 +221,7 @@ def main():
     parser.add_option("-d", "--delimiter",
                       dest="csv_delimiter",
                       default=",",
-                      help="Set the delimiter of the CSV file")
+                      help="Set the delimiter of the CSV file \n DEFAULT: ','")
     parser.add_option("-H", "--hasheader",
                       action="store_true",
                       dest="csv_hasheader",
@@ -235,7 +235,7 @@ def main():
     parser.add_option("-r", "--reportevery",
                       dest="nn_report_every",
                       default=10000,
-                      help="The number of epochs to report data from the trainig process")
+                      help="The number of epochs to report data from the trainig process \n DEFAULT: 10000")
 
 
 
