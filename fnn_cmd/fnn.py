@@ -116,7 +116,7 @@ class FNN:
                         activation = self.activation(dot_value)
                     a.append(activation)
 
-            # Backpropagation begins      
+            # Backpropagation begins
             # First the output layer
             error = (y[i] - a[-1]) #* (y[i] - a[-1]) * 0.5
             deltas = [error * self.output_activation_prime(a[-1])]
@@ -170,7 +170,7 @@ def show_activations():
     for a in OUT_ACTIVATIONS:
         print(a)
 
-def main():
+def run():
     parser = OptionParser(usage="usage: %prog [options] dataset",
                           version="%prog 1.0")
     parser.add_option("-t", "--train",
@@ -236,11 +236,16 @@ def main():
                       dest="nn_report_every",
                       default=10000,
                       help="The number of epochs to report data from the trainig process \n DEFAULT: 10000")
+    parser.add_option("-Q", "--quiet",
+                      action="store_true",
+                      dest="nn_donotprint",
+                      default=False,
+                      help="If set, program will not print the predictions")
 
 
 
     (options, args) = parser.parse_args()
-
+    predictions = []
     if  options.nn_dataset == None and options.nn_predict == None and options.show_activ == False:
         parser.error("use -h to get help")
 
@@ -253,7 +258,7 @@ def main():
 
     if not options.nn_dataset == None:
         dataset = np.array([])
-        isFile = os.path.isfile(options.nn_dataset) 
+        isFile = os.path.isfile(options.nn_dataset)
         if isFile:
             dataset = np.genfromtxt(options.nn_dataset, delimiter=options.csv_delimiter)
             if options.csv_hasheader:
@@ -267,15 +272,15 @@ def main():
         nnShape = list(json.loads(options.nn_shape))
         outputIndex = int(nnShape[-1])
         if nn == None:
-            nn = FNN(nnShape, 
-                activation=options.nn_activation, 
+            nn = FNN(nnShape,
+                activation=options.nn_activation,
                 output_activation=options.nn_output_activation)
 
-        outputs = dataset[ : , -outputIndex : ] 
+        outputs = dataset[ : , -outputIndex : ]
         inputs = dataset[ : , 0 : -outputIndex]
 
-        nn.fit(inputs, outputs, 
-            learning_rate=float(options.nn_learning_rate), 
+        nn.fit(inputs, outputs,
+            learning_rate=float(options.nn_learning_rate),
             epochs=int(options.nn_epochs),
             report_every=int(options.nn_report_every),
             lmbda=float(options.nn_lambda),
@@ -285,7 +290,7 @@ def main():
             nn.save_model(options.model_save_filename)
 
     if not options.nn_predict == None:
-        isFile = os.path.isfile(options.nn_predict)         
+        isFile = os.path.isfile(options.nn_predict)
         if isFile:
             options.nn_predict = np.genfromtxt(options.nn_predict, delimiter=options.csv_delimiter)
         else:
@@ -293,9 +298,13 @@ def main():
             options.nn_predict = np.array(json.loads(options.nn_predict))
         for x in options.nn_predict:
             p = nn.predict(x);
-            print(p)
+            predictions.append(p)
+            if not options.nn_donotprint:
+                print(p)
+            
+    return np.array(predictions)
 
 
 # Command line option parser and executor
 if __name__ == '__main__':
-    main()
+    run()
