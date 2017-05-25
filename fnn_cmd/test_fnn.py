@@ -7,7 +7,7 @@ import numpy as np
 
 DATA_POINTS = 50
 NOISE_LEVEL = 1
-FUNC = 3
+FUNC = 4
 
 np.set_printoptions(threshold=np.nan)
 
@@ -20,6 +20,8 @@ def func(x):
         return 0.5*x + 2 
     elif (FUNC == 3):
         return 5*np.exp(-0.5*x**2)
+    elif (FUNC == 4):
+        return 5*x/(np.abs(x)+1.15)
 
 x = 10 * np.random.random(DATA_POINTS) - 5
 y = func(x)
