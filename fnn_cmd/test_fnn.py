@@ -6,13 +6,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 DATA_POINTS = 50
-NOISE_LEVEL = 3
+NOISE_LEVEL = 1
+FUNC = 3
 
 np.set_printoptions(threshold=np.nan)
 
 def func(x):
-    #return 0.1*x**4 - 2*x**2 - 2
-    return 5*np.sin(x) + 5*np.cos(2*x)
+    if(FUNC == 0):
+        return 5*np.sin(x) + 5*np.cos(2*x)
+    elif (FUNC == 1):
+        return 0.1*x**4 - 2*x**2 - 2 
+    elif (FUNC == 2):
+        return 0.5*x + 2 
+    elif (FUNC == 3):
+        return 5*np.exp(-0.5*x**2)
 
 x = 10 * np.random.random(DATA_POINTS) - 5
 y = func(x)
