@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 DATA_POINTS = 50
-NOISE_LEVEL = 1
-FUNC = 4
+NOISE_LEVEL = 3
+FUNC = 1
 
 np.set_printoptions(threshold=np.nan)
 
@@ -24,13 +24,14 @@ def func(x):
         return 5*x/(np.abs(x)+1.15)
 
 x = 10 * np.random.random(DATA_POINTS) - 5
+#x += (NOISE_LEVEL*np.random.random(DATA_POINTS) - NOISE_LEVEL/2)
 y = func(x)
-y = y + (NOISE_LEVEL*np.random.random(DATA_POINTS) - NOISE_LEVEL/2)
+y += (NOISE_LEVEL*np.random.random(DATA_POINTS) - NOISE_LEVEL/2)
 
 t = np.dstack((x,y))[0]
 t_str = np.array2string(t, separator=',').replace('\n', '')
 
-p = np.reshape(np.arange(-5,5,0.1),(-1,1))
+p = np.reshape(np.arange(-5,5,0.01),(-1,1))
 p_str = np.array2string(p, separator=',').replace('\n', '')
 
 sys.argv = ['prog','-Q', '-a', 'elu','-o', 'lin','-n', '[1,8,8,1]', '-t', t_str, '-p', p_str, '-e', 40000,'-r', 5000 , '-l', 0.001, '-L', 0.01]
