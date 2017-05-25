@@ -164,6 +164,9 @@ class nnDemoApp(App):
         ax.legend()
         fig.canvas.draw()
 
+        RMSE = np.sqrt((preds - self.func(p))**2 )
+        self.output.text += '\nRMSE = ' + str(RMSE.sum()/len(RMSE))
+
 
     def build(self):
 
