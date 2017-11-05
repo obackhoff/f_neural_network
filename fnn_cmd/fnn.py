@@ -120,12 +120,12 @@ class FNN:
             self.output_activation_prime = gauss_prime
 
         # Set weights
-        self.layers = layers
         self.weights = []
         # layers = [2,2,1]
         # range of weight values (-1,1)
         # input and hidden layers - random((2+1, 2+1)) : 3 x 3
-        i = 0
+        self.layers = layers
+        self.loss_func = []
         for i in range(1, len(layers) - 1):
             r = 2 * np.random.random((layers[i-1] + 1, layers[i] + 1)) - 1.0
             self.weights.append(r)
@@ -162,7 +162,9 @@ class FNN:
                         a.append(activation)
                     
                     error = (y_batches[b_idx][x_idx] - a[-1]) #* (y[i] - a[-1]) * 0.5
-                    error_avg += np.linalg.norm(error)
+                    norm_err = np.linalg.norm(error)
+                    error_avg += norm_err
+                    
 
                     deltas = [error * self.output_activation_prime(a[-1])]
                     # then the from second to last layer to the first hidden layer
@@ -170,16 +172,18 @@ class FNN:
                         dot_prod = deltas[-1].dot(self.weights[l].T)
                         deltas.append(dot_prod * self.activation_prime(a[l]))
                         
-                        # reverse layers to have them in order again
+                    # reverse layers to have them in order again
                     deltas.reverse()
-                    for j in range(len(self.weights)):
-                        layer = np.atleast_2d(a[j])
-                        grads[j] += layer.T.dot(np.atleast_2d(deltas[j]))
-        
                     # backpropagation:
                     # - Multiply its output delta and input activation
                     #    to get the gradient of the weight.
                     # - Subtract a ratio (percentage) of the gradient from the weight.
+                    for j in range(len(self.weights)):
+                        layer = np.atleast_2d(a[j])
+                        grads[j] += layer.T.dot(np.atleast_2d(deltas[j]))
+        
+                    
+                self.loss_func.append(error_avg/cnt)   
                 for j in range(len(self.weights)):
                     self.weights[j] = (1 - lmbda*learning_rate/X.shape[0])*(self.weights[j]) + \
                     learning_rate/batch_size * grads[j]
