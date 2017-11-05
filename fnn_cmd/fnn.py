@@ -5,15 +5,35 @@ import numpy as np
 import pickle
 import os.path
 
-ACTIVATIONS = ["sigmoid", "softplus", "elu", "tanh"]
-OUT_ACTIVATIONS = ["lin","sigmoid", "softplus", "elu", "tanh"]
+ACTIVATIONS = ["sigmoid", "softplus", "elu", "relu", "tanh"]
+OUT_ACTIVATIONS = ["lin","sigmoid", "softplus", "elu", "relu", "tanh"]
 
 # DEFINIG ACTIVATION FUNCTIONS
 def sigmoid(x):
     return 1.0/(1.0 + np.exp(-x))
 
-def sigmoid_prime(fx):
+def sigmoid_prime(fx): 
     return fx*(1.0 - fx)
+
+def gauss(x):
+    return np.exp(-(x**2))
+
+def gauss_prime(x): 
+    return -2*x*gauss(x)
+
+def softmax(x):
+    exps = np.exp(x)
+    return exps / exps.sum()
+
+def softmax_prime(fx):
+    #s = fx.reshape(-1,1)
+    return fx*(1 - fx)#np.diagflat(s) - np.dot(s, s.T)
+
+def fastsig(x):
+    return x/(1.0 + np.abs(x))
+
+def fastsig_prime(x):
+    return 1.0 / (1 + np.abs(x))
 
 def softplus(x):
     return np.log(1 + np.exp(x))
@@ -28,6 +48,12 @@ def elu(x):
 def elu_prime(fx):
     a = 1
     return np.where(fx < 0, (fx + a), 1)
+
+def relu(x):
+    return np.where(x < 0, 0, x)
+
+def relu_prime(fx):
+    return np.where(fx < 0, 0, 1)
 
 def tanh(x):
     return np.tanh(1*x)
@@ -58,6 +84,12 @@ class FNN:
         elif activation == 'elu':
             self.activation = elu
             self.activation_prime = elu_prime
+        elif activation == 'relu':
+            self.activation = relu
+            self.activation_prime = relu_prime
+        elif activation == 'fastsig':
+            self.activation = fastsig
+            self.activation_prime = fastsig_prime
 
         if output_activation == 'sigmoid':
             self.output_activation = sigmoid
@@ -74,8 +106,21 @@ class FNN:
         elif output_activation == 'lin':
             self.output_activation = lin
             self.output_activation_prime = lin_prime
+        elif output_activation == 'relu':
+            self.output_activation = relu
+            self.output_activation_prime = relu_prime
+        elif output_activation == 'fastsig':
+            self.output_activation = fastsig
+            self.output_activation_prime = fastsig_prime
+        elif output_activation == 'softmax':
+            self.output_activation = softmax
+            self.output_activation_prime = softmax_prime
+        elif output_activation == 'gauss':
+            self.output_activation = gauss
+            self.output_activation_prime = gauss_prime
 
         # Set weights
+        self.layers = layers
         self.weights = []
         # layers = [2,2,1]
         # range of weight values (-1,1)
@@ -88,60 +133,63 @@ class FNN:
         r = 2 * np.random.random( (layers[i] + 1, layers[i+1])) - 1.0
         self.weights.append(r)
 
-    def fit(self, X, y, learning_rate=0.2, epochs=50000, report_every=10000, lmbda=0, all_input=False):
+    def fit(self, X, y, learning_rate=0.2, epochs=50000, report_every=10000, lmbda=0, batch_size=1):
         # Add column of ones to X
         # This is to add the bias unit to the input layer
+       
         ones = np.atleast_2d(np.ones(X.shape[0]))
         X = np.concatenate((ones.T, X), axis=1)
-
-        if all_input:
-            i = -1
-
+        cnt = 0
+        error_avg = 0
         for k in range(epochs):
+            p = np.random.permutation(X.shape[0])
+            X = X[p]
+            y = y[p]
+            X_batches = np.array(np.array_split(X, X.shape[0]/batch_size))
+            y_batches = np.array(np.array_split(y, y.shape[0]/batch_size))           
+            for b_idx in range(len(y_batches)):               
+                grads = [0] * len(self.weights)
+                for x_idx in range(len(y_batches[0])):
+                    a = [X_batches[b_idx][x_idx]]
+                    cnt += 1
+                     # Forward propagation begins
+                    for l in range(len(self.weights)):
+                        dot_value = np.dot(a[l], self.weights[l])
+                        if(l == len(self.weights) - 1):
+                            activation = self.output_activation(dot_value)
+                        else:
+                            activation = self.activation(dot_value)
+                        a.append(activation)
+                    
+                    error = (y_batches[b_idx][x_idx] - a[-1]) #* (y[i] - a[-1]) * 0.5
+                    error_avg += np.linalg.norm(error)
 
-            if all_input:
-                i += 1
-                i = i % X.shape[0]
-            else:
-                i = np.random.randint(X.shape[0])
-
-            a = [X[i]]
-
-            # Forward propagation begins
-            for l in range(len(self.weights)):
-                    dot_value = np.dot(a[l], self.weights[l])
-                    if(l == len(self.weights) - 1):
-                        activation = self.output_activation(dot_value)
-                    else:
-                        activation = self.activation(dot_value)
-                    a.append(activation)
-
-            # Backpropagation begins
-            # First the output layer
-            error = (y[i] - a[-1]) #* (y[i] - a[-1]) * 0.5
-            deltas = [error * self.output_activation_prime(a[-1])]
-
-
-            # then the from second to last layer to the first hidden layer
-            for l in range(len(a) - 2, 0, -1):
-                dot_prod = deltas[-1].dot(self.weights[l].T)
-                deltas.append(dot_prod * self.activation_prime(a[l]))
-
-            # reverse layers to have them in order again
-            deltas.reverse()
-
-            # backpropagation:
-            # - Multiply its output delta and input activation
-            #    to get the gradient of the weight.
-            # - Subtract a ratio (percentage) of the gradient from the weight.
-            for j in range(len(self.weights)):
-                layer = np.atleast_2d(a[j])
-                delta = np.atleast_2d(deltas[j])
-                # self.weights[j] += learning_rate * layer.T.dot(delta)
-                self.weights[j] = (1 - lmbda*learning_rate/X.shape[0])*(self.weights[j]) + learning_rate * layer.T.dot(delta)
-
-            if k % report_every == 0:
-                print('epochs: ' + str(k), '; error: ' + str((error*error*0.5).sum()/error.shape[0]))
+                    deltas = [error * self.output_activation_prime(a[-1])]
+                    # then the from second to last layer to the first hidden layer
+                    for l in range(len(a) - 2, 0, -1):
+                        dot_prod = deltas[-1].dot(self.weights[l].T)
+                        deltas.append(dot_prod * self.activation_prime(a[l]))
+                        
+                        # reverse layers to have them in order again
+                    deltas.reverse()
+                    for j in range(len(self.weights)):
+                        layer = np.atleast_2d(a[j])
+                        grads[j] += layer.T.dot(np.atleast_2d(deltas[j]))
+        
+                    # backpropagation:
+                    # - Multiply its output delta and input activation
+                    #    to get the gradient of the weight.
+                    # - Subtract a ratio (percentage) of the gradient from the weight.
+                for j in range(len(self.weights)):
+                    self.weights[j] = (1 - lmbda*learning_rate/X.shape[0])*(self.weights[j]) + \
+                    learning_rate/batch_size * grads[j]
+#                    self.weights[j] += -learning_rate * (grads[j]/batch_size + lmbda/X.shape[0] * \
+#                    self.weights[j])
+                
+                if cnt % report_every == 0:
+                    print('epoch: ' + str(k+1), '; error: ' + str(error_avg/cnt))
+                    
+        print('Average error: ' + str(error_avg/cnt))
 
     def predict(self, x):
         a = np.concatenate((np.ones(1).T, np.array(x)), axis=0)
@@ -227,11 +275,10 @@ def run():
                       dest="csv_hasheader",
                       default=False,
                       help="If set, the header (first line) of the dataset will be omitted")
-    parser.add_option("-I", "--allinput",
-                      action="store_true",
-                      dest="nn_allinput",
-                      default=False,
-                      help="If set, the dataset will be read line by line instead of random samples")
+    parser.add_option("-b", "--batch-size",
+                      dest="nn_bs",
+                      default=1,
+                      help="If set > 1, the NN is trained using Mini-Batch GD")
     parser.add_option("-r", "--reportevery",
                       dest="nn_report_every",
                       default=10000,
@@ -284,7 +331,7 @@ def run():
             epochs=int(options.nn_epochs),
             report_every=int(options.nn_report_every),
             lmbda=float(options.nn_lambda),
-            all_input=options.nn_allinput)
+            batch_size=int(options.nn_bs))
 
         if not options.model_save_filename == "":
             nn.save_model(options.model_save_filename)
