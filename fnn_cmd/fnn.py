@@ -181,8 +181,10 @@ class FNN:
                     for j in range(len(self.weights)):
                         layer = np.atleast_2d(a[j])
                         grads[j] += layer.T.dot(np.atleast_2d(deltas[j]))
-        
-                    
+                        
+                    if cnt % report_every == 0:
+                    print('epoch: ' + str(k+1), '; error: ' + str(error_avg/cnt))
+                            
                 self.loss_func.append(error_avg/cnt)   
                 for j in range(len(self.weights)):
                     self.weights[j] = (1 - lmbda*learning_rate/X.shape[0])*(self.weights[j]) + \
@@ -190,8 +192,7 @@ class FNN:
 #                    self.weights[j] += -learning_rate * (grads[j]/batch_size + lmbda/X.shape[0] * \
 #                    self.weights[j])
                 
-                if cnt % report_every == 0:
-                    print('epoch: ' + str(k+1), '; error: ' + str(error_avg/cnt))
+                
                     
         print('Average error: ' + str(error_avg/cnt))
 
