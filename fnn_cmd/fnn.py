@@ -149,7 +149,7 @@ class FNN:
             y_batches = np.array(np.array_split(y, y.shape[0]/batch_size))           
             for b_idx in range(len(y_batches)):               
                 grads = [0] * len(self.weights)
-                for x_idx in range(len(y_batches[0])):
+                for x_idx in range(len(y_batches[b_idx])):
                     a = [X_batches[b_idx][x_idx]]
                     cnt += 1
                      # Forward propagation begins
