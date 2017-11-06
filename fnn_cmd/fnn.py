@@ -183,7 +183,7 @@ class FNN:
                         grads[j] += layer.T.dot(np.atleast_2d(deltas[j]))
                         
                     if cnt % report_every == 0:
-                    print('epoch: ' + str(k+1), '; error: ' + str(error_avg/cnt))
+                        print('epoch: ' + str(k+1), '; error: ' + str(error_avg/cnt))
                             
                 self.loss_func.append(error_avg/cnt)   
                 for j in range(len(self.weights)):
