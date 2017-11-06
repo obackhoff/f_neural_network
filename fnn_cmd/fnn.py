@@ -286,7 +286,7 @@ def run():
     parser.add_option("-r", "--reportevery",
                       dest="nn_report_every",
                       default=10000,
-                      help="The number of epochs to report data from the trainig process \n DEFAULT: 10000")
+                      help="The number of iterations to report data from the trainig process \n DEFAULT: 10000")
     parser.add_option("-Q", "--quiet",
                       action="store_true",
                       dest="nn_donotprint",
